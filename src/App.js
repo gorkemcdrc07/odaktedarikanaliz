@@ -10,67 +10,68 @@ import {
 
 function App() {
     return (
-        <Box sx={{ p: 4 }}>
+        <Box sx={{ p: 2 }}>
             <Grid container spacing={2}>
-                {/* Card 1 */}
-                <Grid item xs={12} md={3}>
-                    <Card>
-                        <CardContent>
-                            <Typography variant="h6" align="center">
-                                Card 1
-                            </Typography>
-                        </CardContent>
-                    </Card>
-                </Grid>
-
-                {/* Card 2 */}
-                <Grid item xs={12} md={3}>
-                    <Card>
-                        <CardContent>
-                            <Typography variant="h6" align="center">
-                                Card 2
-                            </Typography>
-                        </CardContent>
-                    </Card>
-                </Grid>
-
-                {/* Card 3 & 4 (alt alta) */}
-                <Grid item xs={12} md={3}>
-                    <Grid container spacing={2} direction="column">
-                        {/* Card 3 */}
-                        <Grid item>
-                            <Card>
+                {/* Sol taraf: 3 sütun */}
+                <Grid item xs={12} md={9}>
+                    <Grid container spacing={2}>
+                        {/* Card 1 */}
+                        <Grid item xs={12} md={4}>
+                            <Card sx={{ height: 400 }}>
                                 <CardContent>
                                     <Typography variant="h6" align="center">
-                                        Card 3
+                                        Card 1
                                     </Typography>
                                 </CardContent>
                             </Card>
                         </Grid>
 
-                        {/* Card 4 */}
-                        <Grid item>
-                            <Card>
+                        {/* Card 2 */}
+                        <Grid item xs={12} md={4}>
+                            <Card sx={{ height: 400 }}>
                                 <CardContent>
                                     <Typography variant="h6" align="center">
-                                        Card 4
+                                        Card 2
                                     </Typography>
                                 </CardContent>
                             </Card>
+                        </Grid>
+
+                        {/* Card 3 + Card 4 (alt alta ama toplamda 400px) */}
+                        <Grid item xs={12} md={4}>
+                            <Grid container direction="column" spacing={2} sx={{ height: 400 }}>
+                                <Grid item sx={{ height: "50%" }}>
+                                    <Card sx={{ height: "100%" }}>
+                                        <CardContent>
+                                            <Typography variant="h6" align="center">
+                                                Card 3
+                                            </Typography>
+                                        </CardContent>
+                                    </Card>
+                                </Grid>
+                                <Grid item sx={{ height: "50%" }}>
+                                    <Card sx={{ height: "100%" }}>
+                                        <CardContent>
+                                            <Typography variant="h6" align="center">
+                                                Card 4
+                                            </Typography>
+                                        </CardContent>
+                                    </Card>
+                                </Grid>
+                            </Grid>
                         </Grid>
                     </Grid>
                 </Grid>
 
-                {/* Uzun Card 5 */}
+                {/* Sağ taraf: Card 5 (tam ekran yüksekliği) */}
                 <Grid item xs={12} md={3}>
-                    <Card sx={{ height: "100%" }}>
+                    <Card sx={{ height: 'calc(100vh - 32px)' }}>
                         <CardContent>
                             <Typography variant="h6" align="center">
-                                Card 5 (Uzun Kart)
+                                Card 5 (Tam Yükseklik)
                             </Typography>
                             <Typography variant="body2" align="center">
-                                Bu kart sağda uzun olacak şekilde tasarlandı.
-                                Diğer kartlarla hizalı durur.
+                                Ekranın sağında ve tüm yüksekliği kaplar.
                             </Typography>
                         </CardContent>
                     </Card>
