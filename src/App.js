@@ -71,20 +71,16 @@ function App() {
                 const endDate = new Date(selectedDate);
                 endDate.setHours(23, 59, 59, 999);
 
-                const response = await axios.post(
-                    "/api/tmsorders/getall",
-                    {
+                const response = await axios.get("/api/tmsorders/getall", {
+                    params: {
                         startDate: startDate.toISOString(),
                         endDate: endDate.toISOString(),
                         userId: 1,
                     },
-                    {
-                        headers: {
-                            Authorization: "Bearer 49223653afa4b7e22c3659762c835dcdef9725a401e928fd46f697be8ea2597273bf4479cf9d0f7e5b8b03907c2a0b4d58625692c3e30629ac01fc477774de75",
-                            "Content-Type": "application/json",
-                        },
-                    }
-                );
+                    headers: {
+                        Authorization: "Bearer 49223653afa4b7e22c3659762c835dcdef9725a401e928fd46f697be8ea2597273bf4479cf9d0f7e5b8b03907c2a0b4d58625692c3e30629ac01fc477774de75",
+                    },
+                });
 
                 const data = response.data?.Data ?? [];
 
@@ -145,7 +141,7 @@ function App() {
                 const topUnfulfilled = Array.from(projectMap.entries())
                     .map(([name, data]) => ({
                         name,
-                        unsupplied: data.total - data.supplied
+                        unsupplied: data.total - data.supplied,
                     }))
                     .filter(project => project.unsupplied > 0)
                     .sort((a, b) => b.unsupplied - a.unsupplied)
@@ -158,7 +154,7 @@ function App() {
                 setShoPrintedCount(shoPrintedSet.size);
                 setShoNotPrintedCount(shoNotPrintedSet.size);
                 setTopProjects(sortedProjects);
-                setTop5UnfulfilledProjects(topUnfulfilled); // 👈 Bunu da unutma!
+                setTop5UnfulfilledProjects(topUnfulfilled);
 
                 const userMap = new Map();
                 data.forEach((order) => {
@@ -195,6 +191,7 @@ function App() {
 
         fetchData();
     }, [selectedDate]);
+
 
 
     const unsuppliedCount = talepPlanlananCount - suppliedCount;
