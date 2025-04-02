@@ -74,8 +74,8 @@ function App() {
                 };
 
                 // 🔧 CORS sorunu yaşamamak için sadece path kullanıyoruz
-                const response = await axios.post(
-                    "/api/tmsorders/getall",
+                const response = await axios.post("https://api.odaklojistik.com.tr/api/tmsorders/getall",
+
                     payload,
                     {
                         headers: {
