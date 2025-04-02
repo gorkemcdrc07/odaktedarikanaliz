@@ -1,8 +1,13 @@
-export default async function handler(req, res) {
-    if (req.method !== "POST") {
-        return res.status(405).json({ message: "Method Not Allowed" });
-    }
+// api/proxy.js
+const express = require("express");
+const cors = require("cors");
+const fetch = require("node-fetch");
 
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+app.post("/api/proxy", async (req, res) => {
     try {
         const response = await fetch("https://api.odaklojistik.com.tr/api/tmsorders/getall", {
             method: "POST",
@@ -14,8 +19,13 @@ export default async function handler(req, res) {
         });
 
         const data = await response.json();
-        res.status(response.status).json(data);
+        res.json(data);
     } catch (error) {
-        res.status(500).json({ message: "Internal Server Error", error: error.message });
+        res.status(500).json({ message: "Sunucu hatasý", error: error.message });
     }
-}
+});
+
+const PORT = 5000;
+app.listen(PORT, () => {
+    console.log(`Proxy sunucusu çalýþýyor: http://localhost:${PORT}`);
+});

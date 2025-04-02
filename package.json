@@ -2,6 +2,8 @@
   "name": "odaktedarikanaliz",
   "version": "0.1.0",
   "private": true,
+  "homepage": "./",
+  "proxy": "https://api.odaklojistik.com.tr",
   "dependencies": {
     "@craco/craco": "^7.1.0",
     "@date-io/date-fns": "^2.16.0",
@@ -14,14 +16,20 @@
     "@testing-library/react": "^16.2.0",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.8.4",
+    "cors": "^2.8.5",
     "date-fns": "^2.29.3",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
+    "express": "^5.1.0",
+    "node-fetch": "^3.3.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "recharts": "^2.15.1",
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
-    "@babel/plugin-proposal-optional-chaining": "^7.21.0"
+    "@babel/plugin-proposal-optional-chaining": "^7.21.0",
+    "@babel/preset-env": "^7.21.0",
+    "@babel/preset-react": "^7.18.6",
+    "babel-loader": "^10.0.0"
   },
   "scripts": {
     "start": "craco start",
@@ -47,5 +55,16 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "https://api.odaklojistik.com.tr"
+  "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
+  "main": "craco.config.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gorkemcdrc07/odaktedarikanaliz.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gorkemcdrc07/odaktedarikanaliz/issues"
+  }
 }

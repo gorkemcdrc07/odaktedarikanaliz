@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Box,
     Card,
@@ -65,17 +65,24 @@ function App() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const startDate = new Date(selectedDate);
-                startDate.setHours(0, 0, 0, 0);
+                const dateStr = new Date(selectedDate).toISOString().split("T")[0];
 
-                const endDate = new Date(selectedDate);
-                endDate.setHours(23, 59, 59, 999);
-
-                const response = await axios.post("/api/proxy", {
-                    startDate: startDate.toISOString(),
-                    endDate: endDate.toISOString(),
+                const payload = {
+                    startDate: `${dateStr}T00:00:00`,
+                    endDate: `${dateStr}T00:00:00`,
                     userId: 1,
-                });
+                };
+
+                // 🔧 CORS sorunu yaşamamak için sadece path kullanıyoruz
+                const response = await axios.post(
+                    "/api/tmsorders/getall",
+                    payload,
+                    {
+                        headers: {
+                            Authorization: "Bearer 49223653afa4b7e22c3659762c835dcdef9725a401e928fd46f697be8ea2597273bf4479cf9d0f7e5b8b03907c2a0b4d58625692c3e30629ac01fc477774de75"
+                        }
+                    }
+                );
 
                 const data = response.data?.Data ?? [];
 
@@ -186,6 +193,7 @@ function App() {
 
         fetchData();
     }, [selectedDate]);
+
 
 
 
