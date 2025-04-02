@@ -580,16 +580,16 @@ function App() {
                                 <Table size="medium" stickyHeader>
                                     <TableHead>
                                         <TableRow sx={{ backgroundColor: "#F5F5F5" }}>
-                                            <TableCell align="center" sx={{ fontWeight: "bold", fontSize: "18px", color: "#333" }}>
+                                            <TableCell align="center" sx={{ fontWeight: "bold", fontSize: "24px", color: "#333" }}>  {/* Daha büyük yazı boyutu */}
                                                 SEFER AÇAN KULLANICI
                                             </TableCell>
-                                            <TableCell align="center" sx={{ fontWeight: "bold", fontSize: "18px", color: "#333" }}>
+                                            <TableCell align="center" sx={{ fontWeight: "bold", fontSize: "24px", color: "#333" }}>  {/* Daha büyük yazı boyutu */}
                                                 TOPLAM AÇTIĞI SEFER
                                             </TableCell>
-                                            <TableCell align="center" sx={{ fontWeight: "bold", fontSize: "18px", color: "#333" }}>
+                                            <TableCell align="center" sx={{ fontWeight: "bold", fontSize: "24px", color: "#333" }}>  {/* Daha büyük yazı boyutu */}
                                                 DOLU SEFER
                                             </TableCell>
-                                            <TableCell align="center" sx={{ fontWeight: "bold", fontSize: "18px", color: "#333" }}>
+                                            <TableCell align="center" sx={{ fontWeight: "bold", fontSize: "24px", color: "#333" }}>  {/* Daha büyük yazı boyutu */}
                                                 BOŞ SEFER
                                             </TableCell>
                                         </TableRow>
@@ -600,16 +600,16 @@ function App() {
                                                 .sort((a, b) => b.Count - a.Count) // Toplam açılan seferi en büyükten küçüğe sıralıyoruz
                                                 .map((row, index) => (
                                                     <TableRow key={index} sx={{ "&:nth-of-type(odd)": { backgroundColor: "#F9FAFB" }, "&:hover": { backgroundColor: "#E0E0E0" } }}>
-                                                        <TableCell align="center" sx={{ fontSize: "16px", fontWeight: "bold", color: "#424242" }}>
+                                                        <TableCell align="center" sx={{ fontSize: "20px", fontWeight: "bold", color: "#424242" }}>  {/* Daha büyük yazı boyutu */}
                                                             {row.TMSDespatchCreatedBy}
                                                         </TableCell>
-                                                        <TableCell align="center" sx={{ fontSize: "16px", fontWeight: "bold", color: "#000" }}>
+                                                        <TableCell align="center" sx={{ fontSize: "20px", fontWeight: "bold", color: "#000" }}>  {/* Daha büyük yazı boyutu */}
                                                             {row.Count}
                                                         </TableCell>
-                                                        <TableCell align="center" sx={{ fontSize: "16px", fontWeight: "bold", color: "#4CAF50" }}>
+                                                        <TableCell align="center" sx={{ fontSize: "20px", fontWeight: "bold", color: "#4CAF50" }}>  {/* Daha büyük yazı boyutu */}
                                                             {row.DoluSefer}
                                                         </TableCell>
-                                                        <TableCell align="center" sx={{ fontSize: "16px", fontWeight: "bold", color: "#D32F2F" }}>
+                                                        <TableCell align="center" sx={{ fontSize: "20px", fontWeight: "bold", color: "#D32F2F" }}>  {/* Daha büyük yazı boyutu */}
                                                             {row.BosSefer}
                                                         </TableCell>
                                                     </TableRow>
@@ -626,6 +626,7 @@ function App() {
                             </TableContainer>
                         </CardContent>
                     </Card>
+
 
                 </Grid>
             </Grid>
