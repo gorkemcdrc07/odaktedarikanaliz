@@ -73,16 +73,8 @@ function App() {
                     userId: 1,
                 };
 
-                // 🔧 CORS sorunu yaşamamak için sadece path kullanıyoruz
-                const response = await axios.post("https://api.odaklojistik.com.tr/api/tmsorders/getall",
-
-                    payload,
-                    {
-                        headers: {
-                            Authorization: "Bearer 49223653afa4b7e22c3659762c835dcdef9725a401e928fd46f697be8ea2597273bf4479cf9d0f7e5b8b03907c2a0b4d58625692c3e30629ac01fc477774de75"
-                        }
-                    }
-                );
+                // ✅ Artık doğrudan proxy API'imize istek atıyoruz (CORS yok!)
+                const response = await axios.post("/api/proxy", payload);
 
                 const data = response.data?.Data ?? [];
 
@@ -193,6 +185,7 @@ function App() {
 
         fetchData();
     }, [selectedDate]);
+
 
 
 

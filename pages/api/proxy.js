@@ -1,31 +1,25 @@
-// api/proxy.js
-const express = require("express");
-const cors = require("cors");
-const fetch = require("node-fetch");
+export default async function handler(req, res) {
+    if (req.method !== 'POST') {
+        return res.status(405).json({ error: 'Sadece POST destekleniyor' });
+    }
 
-const app = express();
-app.use(cors());
-app.use(express.json());
+    const payload = req.body;
 
-app.post("/api/proxy", async (req, res) => {
     try {
         const response = await fetch("https://api.odaklojistik.com.tr/api/tmsorders/getall", {
-            method: "POST",
+            method: 'POST',
             headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer 49223653afa4b7e22c3659762c835dcdef9725a401e928fd46f697be8ea2597273bf4479cf9d0f7e5b8b03907c2a0b4d58625692c3e30629ac01fc477774de75"
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer 49223653afa4b7e22c3659762c835dcdef9725a401e928fd46f697be8ea2597273bf4479cf9d0f7e5b8b03907c2a0b4d58625692c3e30629ac01fc477774de75'
             },
-            body: JSON.stringify(req.body),
+            body: JSON.stringify(payload)
         });
 
         const data = await response.json();
-        res.json(data);
-    } catch (error) {
-        res.status(500).json({ message: "Sunucu hatasý", error: error.message });
-    }
-});
+        return res.status(200).json(data);
 
-const PORT = 5000;
-app.listen(PORT, () => {
-    console.log(`Proxy sunucusu çalýþýyor: http://localhost:${PORT}`);
-});
+    } catch (error) {
+        console.error("Proxy API hatasý:", error);
+        return res.status(500).json({ error: 'API çaðrýsý baþarýsýz' });
+    }
+}
