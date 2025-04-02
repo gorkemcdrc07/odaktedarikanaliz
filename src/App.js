@@ -74,7 +74,7 @@ function App() {
                 };
 
                 // ✅ Artık doğrudan proxy API'imize istek atıyoruz (CORS yok!)
-                const response = await axios.post("/api/proxy", payload);
+                const response = await axios.post("https://proxy-server-9yut.onrender.com/api/tmsorders", payload);
 
                 const data = response.data?.Data ?? [];
 
