@@ -36,6 +36,17 @@ import {
 } from "recharts";
 
 import axios from "axios";
+import Layout from "./components/Layout"; // yol senin projenin yapısına göre değişebilir
+
+
+
+
+
+
+
+
+
+
 
 function App() {
     const [selectedDate, setSelectedDate] = useState(new Date());
@@ -50,6 +61,11 @@ function App() {
     const [top5UnfulfilledProjects, setTop5UnfulfilledProjects] = useState([]);
     const [timeLeft, setTimeLeft] = useState(300); // 5 dakika = 300 saniye
 
+
+
+
+
+
     useEffect(() => {
         const fetchDataAndResetTimer = async () => {
             try {
@@ -62,7 +78,6 @@ function App() {
                 };
 
                 const response = await axios.post("https://proxy-server-9yut.onrender.com/api/tmsorders", payload);
-
                 const data = response.data?.Data ?? [];
 
                 const talepPlanlananSet = new Set();
@@ -72,6 +87,11 @@ function App() {
                 const shoPrintedSet = new Set();
                 const shoNotPrintedSet = new Set();
                 const projectMap = new Map();
+
+                // Benzersiz TMSVehicleRequestDocumentNo saymak için Set kullanıyoruz
+                const uniqueTMSRequestSet = new Set();
+                const uniqueDoluSeferSet = new Set();  // Benzersiz Dolu Seferler
+                const uniqueBosSeferSet = new Set();   // Benzersiz Boş Seferler
 
                 data.forEach((order) => {
                     const project = order.ProjectName ?? "Bilinmeyen";
@@ -87,6 +107,7 @@ function App() {
 
                     if (isValid) {
                         talepPlanlananSet.add(order.TMSVehicleRequestDocumentNo);
+                        uniqueTMSRequestSet.add(order.TMSVehicleRequestDocumentNo); // Benzersiz değerleri ekliyoruz
 
                         const entry = projectMap.get(project);
                         entry.total += 1;
@@ -106,9 +127,38 @@ function App() {
                             } else {
                                 shoNotPrintedSet.add(order.TMSDespatchDocumentNo);
                             }
+
+                            // Dolu Seferleri benzersiz sayıyoruz
+                            if (order.TMSVehicleRequestDocumentNo.startsWith("VP")) {
+                                console.log("Dolu Sefer: ", order.TMSVehicleRequestDocumentNo);  // Debugging
+                                uniqueDoluSeferSet.add(order.TMSVehicleRequestDocumentNo);
+                            }
+
+                            // Boş Seferleri benzersiz sayıyoruz
+                            if (order.TMSVehicleRequestDocumentNo.startsWith("BOS")) {
+                                console.log("Boş Sefer: ", order.TMSVehicleRequestDocumentNo);  // Debugging
+                                uniqueBosSeferSet.add(order.TMSVehicleRequestDocumentNo);
+                            }
                         }
                     }
                 });
+
+                setTalepPlanlananCount(talepPlanlananSet.size);
+                setSuppliedCount(suppliedSet.size);
+                setSpotCount(spotSet.size);
+                setFiloCount(filoSet.size);
+                setShoPrintedCount(shoPrintedSet.size);
+                setShoNotPrintedCount(shoNotPrintedSet.size);
+
+                // Benzersiz TMSVehicleRequestDocumentNo sayısını alıyoruz
+                const uniqueTMSCount = uniqueTMSRequestSet.size;
+                console.log("Benzersiz TMSVehicleRequestDocumentNo Sayısı:", uniqueTMSCount); // Konsola yazdırma
+
+                // Benzersiz Dolu Sefer ve Boş Sefer sayıları
+                const doluSeferCount = uniqueDoluSeferSet.size;
+                const bosSeferCount = uniqueBosSeferSet.size;
+                console.log("Benzersiz Dolu Sefer Sayısı:", doluSeferCount);  // Konsola yazdırma
+                console.log("Benzersiz Boş Sefer Sayısı:", bosSeferCount);  // Konsola yazdırma
 
                 const sortedProjects = Array.from(projectMap.entries())
                     .sort((a, b) => b[1].total - a[1].total)
@@ -128,47 +178,52 @@ function App() {
                     .sort((a, b) => b.unsupplied - a.unsupplied)
                     .slice(0, 5);
 
-                setTalepPlanlananCount(talepPlanlananSet.size);
-                setSuppliedCount(suppliedSet.size);
-                setSpotCount(spotSet.size);
-                setFiloCount(filoSet.size);
-                setShoPrintedCount(shoPrintedSet.size);
-                setShoNotPrintedCount(shoNotPrintedSet.size);
                 setTopProjects(sortedProjects);
                 setTop5UnfulfilledProjects(topUnfulfilled);
 
                 const userMap = new Map();
-                data.forEach((order) => {
-                    if (!order.TMSDespatchCreatedBy) return;
 
-                    if (!userMap.has(order.TMSDespatchCreatedBy)) {
-                        userMap.set(order.TMSDespatchCreatedBy, {
-                            TMSDespatchCreatedBy: order.TMSDespatchCreatedBy,
-                            Count: 0,
-                            DoluSefer: 0,
-                            BosSefer: 0
+                data.forEach((order) => {
+                    const user = order.TMSDespatchCreatedBy;
+                    const docNo = order.TMSVehicleRequestDocumentNo;
+
+                    if (!user || !docNo) return;
+
+                    if (!userMap.has(user)) {
+                        userMap.set(user, {
+                            TMSDespatchCreatedBy: user,
+                            AllDocs: new Set(),
+                            DoluSet: new Set(),
+                            BosSet: new Set(),
                         });
                     }
 
-                    const userEntry = userMap.get(order.TMSDespatchCreatedBy);
-                    userEntry.Count += 1;
+                    const entry = userMap.get(user);
+                    entry.AllDocs.add(docNo);
 
-                    if (
-                        order.TMSVehicleRequestDocumentNo &&
-                        !order.TMSVehicleRequestDocumentNo.startsWith("BOS")
-                    ) {
-                        userEntry.DoluSefer += 1;
-                    } else {
-                        userEntry.BosSefer += 1;
+                    if (docNo.startsWith("VP")) {
+                        entry.DoluSet.add(docNo);
+                    } else if (docNo.startsWith("BOS")) {
+                        entry.BosSet.add(docNo);
                     }
                 });
 
-                setTableData(Array.from(userMap.values()));
+                // Set’leri sayılara çevirerek tabloya gönderilecek veriyi hazırlıyoruz
+                const formattedTableData = Array.from(userMap.values()).map(entry => ({
+                    TMSDespatchCreatedBy: entry.TMSDespatchCreatedBy,
+                    Count: entry.AllDocs.size,
+                    DoluSefer: entry.DoluSet.size,
+                    BosSefer: entry.BosSet.size,
+                }));
+
+                setTableData(formattedTableData);
+
 
             } catch (error) {
                 console.error("API verisi alınamadı:", error);
             }
         };
+
 
         // Geri sayım timer'ı
         const timer = setInterval(() => {
@@ -187,6 +242,8 @@ function App() {
         return () => clearInterval(timer); // Component unmount olduğunda timer'ı temizle
     }, [selectedDate]);
 
+
+
     const unsuppliedCount = talepPlanlananCount - suppliedCount;
 
     const pieData = [
@@ -203,7 +260,15 @@ function App() {
     const minutes = Math.floor(timeLeft / 60);
     const seconds = timeLeft % 60;
 
-    return (
+   return (
+
+
+
+        <Layout>
+
+
+
+
         <Box sx={{ display: "flex", height: "100vh", p: 2, gap: 2 }}>
             <Box sx={{ flex: 3, display: "flex", flexDirection: "column", gap: 2 }}>
                 <Box sx={{ flex: 1, display: "flex", gap: 2 }}>
@@ -580,16 +645,16 @@ function App() {
                                 <Table size="medium" stickyHeader>
                                     <TableHead>
                                         <TableRow sx={{ backgroundColor: "#F5F5F5" }}>
-                                            <TableCell align="center" sx={{ fontWeight: "bold", fontSize: "24px", color: "#333" }}>  {/* Daha büyük yazı boyutu */}
+                                            <TableCell align="center" sx={{ fontWeight: "bold", fontSize: "24px", color: "#333" }}>
                                                 SEFER AÇAN KULLANICI
                                             </TableCell>
-                                            <TableCell align="center" sx={{ fontWeight: "bold", fontSize: "24px", color: "#333" }}>  {/* Daha büyük yazı boyutu */}
+                                            <TableCell align="center" sx={{ fontWeight: "bold", fontSize: "24px", color: "#333" }}>
                                                 TOPLAM AÇTIĞI SEFER
                                             </TableCell>
-                                            <TableCell align="center" sx={{ fontWeight: "bold", fontSize: "24px", color: "#333" }}>  {/* Daha büyük yazı boyutu */}
+                                            <TableCell align="center" sx={{ fontWeight: "bold", fontSize: "24px", color: "#333" }}>
                                                 DOLU SEFER
                                             </TableCell>
-                                            <TableCell align="center" sx={{ fontWeight: "bold", fontSize: "24px", color: "#333" }}>  {/* Daha büyük yazı boyutu */}
+                                            <TableCell align="center" sx={{ fontWeight: "bold", fontSize: "24px", color: "#333" }}>
                                                 BOŞ SEFER
                                             </TableCell>
                                         </TableRow>
@@ -600,17 +665,17 @@ function App() {
                                                 .sort((a, b) => b.Count - a.Count) // Toplam açılan seferi en büyükten küçüğe sıralıyoruz
                                                 .map((row, index) => (
                                                     <TableRow key={index} sx={{ "&:nth-of-type(odd)": { backgroundColor: "#F9FAFB" }, "&:hover": { backgroundColor: "#E0E0E0" } }}>
-                                                        <TableCell align="center" sx={{ fontSize: "20px", fontWeight: "bold", color: "#424242" }}>  {/* Daha büyük yazı boyutu */}
+                                                        <TableCell align="center" sx={{ fontSize: "26px", fontWeight: "bolder", color: "#424242" }}>
                                                             {row.TMSDespatchCreatedBy}
                                                         </TableCell>
-                                                        <TableCell align="center" sx={{ fontSize: "20px", fontWeight: "bold", color: "#000" }}>  {/* Daha büyük yazı boyutu */}
+                                                        <TableCell align="center" sx={{ fontSize: "26px", fontWeight: "bolder", color: "#000" }}>
                                                             {row.Count}
                                                         </TableCell>
-                                                        <TableCell align="center" sx={{ fontSize: "20px", fontWeight: "bold", color: "#4CAF50" }}>  {/* Daha büyük yazı boyutu */}
-                                                            {row.DoluSefer}
+                                                        <TableCell align="center" sx={{ fontSize: "26px", fontWeight: "bolder", color: "#4CAF50" }}>
+                                                            {row.DoluSefer} {/* Benzersiz Dolu Sefer sayısı */}
                                                         </TableCell>
-                                                        <TableCell align="center" sx={{ fontSize: "20px", fontWeight: "bold", color: "#D32F2F" }}>  {/* Daha büyük yazı boyutu */}
-                                                            {row.BosSefer}
+                                                        <TableCell align="center" sx={{ fontSize: "26px", fontWeight: "bolder", color: "#D32F2F" }}>
+                                                            {row.BosSefer} {/* Benzersiz Boş Sefer sayısı */}
                                                         </TableCell>
                                                     </TableRow>
                                                 ))
@@ -631,7 +696,10 @@ function App() {
                 </Grid>
             </Grid>
         </Box>
+</Layout>
+
     );
+
 }
 
 export default App;

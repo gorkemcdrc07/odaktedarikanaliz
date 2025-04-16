@@ -9,7 +9,9 @@
     "@date-io/date-fns": "^2.16.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
+    "@mui/icons-material": "^7.0.1",
     "@mui/material": "^7.0.1",
+    "@mui/x-data-grid": "^7.28.3",
     "@mui/x-date-pickers": "^7.28.2",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
@@ -22,6 +24,7 @@
     "node-fetch": "^3.3.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-router-dom": "^7.4.1",
     "recharts": "^2.15.1",
     "web-vitals": "^2.1.4"
   },
